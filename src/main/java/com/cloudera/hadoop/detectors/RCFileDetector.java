@@ -3,19 +3,20 @@ package com.cloudera.hadoop.detectors;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.hive.ql.io.RCFile;
 import org.apache.hadoop.io.SequenceFile;
 
 import java.io.IOException;
 
-public class SequenceFileDetector implements Detector {
+public class RCFileDetector implements Detector {
 
-    private static final byte[] MAGIC = new byte[] { 'S', 'E', 'Q' };
+    private static final byte[] MAGIC = new byte[] { 'R', 'C', 'F' };
 
     private int version;
 
     @Override
     public String getName() {
-        return "SequenceFile";
+        return "RCFile";
     }
 
     @Override
@@ -39,18 +40,12 @@ public class SequenceFileDetector implements Detector {
     public String analyze(Configuration configuration, FileStatus fileStatus) throws IOException {
 
         FileSystem fs = FileSystem.get(configuration);
-        SequenceFile.Reader reader = new SequenceFile.Reader(fs, fileStatus.getPath(), configuration);
-        String codec = reader.getCompressionCodec().getClass().getName();
-        String compType = reader.getCompressionType().toString();
-        String key = reader.getKeyClassName();
-        String val = reader.getValueClassName();
+        RCFile.Reader reader = new RCFile.Reader(fs, fileStatus.getPath(), configuration);
+        SequenceFile.Metadata metadata = reader.getMetadata();
         int blocks = fs.getFileBlockLocations(fileStatus, 0, fileStatus.getLen()).length;
 
-        return "SequenceFile (version " + version + ") with " +
+        return "RCFile (version " + version + ") with " +
                 blocks + (blocks == 1 ? " block" : " blocks") + "\n\n" +
-                "Key: " + key + "\n" +
-                "Value: " + val + "\n" +
-                "Compression Type: " + compType + "\n"+
-                "Compression Codec: " + codec;
+                metadata.toString();
     }
 }

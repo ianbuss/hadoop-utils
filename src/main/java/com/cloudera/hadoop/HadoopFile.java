@@ -1,9 +1,6 @@
 package com.cloudera.hadoop;
 
-import com.cloudera.hadoop.detectors.AvroDetector;
-import com.cloudera.hadoop.detectors.Detector;
-import com.cloudera.hadoop.detectors.ParquetDetector;
-import com.cloudera.hadoop.detectors.SequenceFileDetector;
+import com.cloudera.hadoop.detectors.*;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -19,7 +16,9 @@ public class HadoopFile extends Configured implements Tool {
     private static Detector[] REGISTERED_DETECTORS = {
             new ParquetDetector(),
             new AvroDetector(),
-            new SequenceFileDetector()
+            new SequenceFileDetector(),
+            new RCFileDetector(),
+            new ORCFileDetector()
     };
 
     String file;

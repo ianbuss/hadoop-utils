@@ -41,8 +41,15 @@ public class HadoopFileTest {
     }
 
     @Test
-    public void testRCFile() {
+    public void testRCFile() throws IOException {
+        HadoopFile hadoopFile = new HadoopFile("src/test/resources/testrcfile.rcf", configuration);
+        hadoopFile.inspect();
+    }
 
+    @Test
+    public void testORCFile() throws IOException {
+        HadoopFile hadoopFile = new HadoopFile("src/test/resources/testorc.orc", configuration);
+        hadoopFile.inspect();
     }
 
 }

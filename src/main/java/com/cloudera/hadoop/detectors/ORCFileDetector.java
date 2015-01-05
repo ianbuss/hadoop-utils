@@ -3,19 +3,21 @@ package com.cloudera.hadoop.detectors;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.hive.ql.io.RCFile;
+import org.apache.hadoop.hive.ql.io.orc.Metadata;
+import org.apache.hadoop.hive.ql.io.orc.OrcFile;
+import org.apache.hadoop.hive.ql.io.orc.Reader;
 import org.apache.hadoop.io.SequenceFile;
 
 import java.io.IOException;
 
-public class SequenceFileDetector implements Detector {
+public class ORCFileDetector implements Detector {
 
-    private static final byte[] MAGIC = new byte[] { 'S', 'E', 'Q' };
-
-    private int version;
+    private static final byte[] MAGIC = new byte[] { 'O', 'R', 'C' };
 
     @Override
     public String getName() {
-        return "SequenceFile";
+        return "ORCFile";
     }
 
     @Override
@@ -28,9 +30,6 @@ public class SequenceFileDetector implements Detector {
                 }
             }
         }
-        if (header.length >= 4) {
-            version = (int) header[3];
-        }
 
         return true;
     }
@@ -39,18 +38,14 @@ public class SequenceFileDetector implements Detector {
     public String analyze(Configuration configuration, FileStatus fileStatus) throws IOException {
 
         FileSystem fs = FileSystem.get(configuration);
-        SequenceFile.Reader reader = new SequenceFile.Reader(fs, fileStatus.getPath(), configuration);
-        String codec = reader.getCompressionCodec().getClass().getName();
-        String compType = reader.getCompressionType().toString();
-        String key = reader.getKeyClassName();
-        String val = reader.getValueClassName();
+        Reader reader = OrcFile.createReader(fs, fileStatus.getPath());
+        Metadata metadata = reader.getMetadata();
+        String compressionType = reader.getCompression().toString();
+
         int blocks = fs.getFileBlockLocations(fileStatus, 0, fileStatus.getLen()).length;
 
-        return "SequenceFile (version " + version + ") with " +
+        return "ORCFile with " +
                 blocks + (blocks == 1 ? " block" : " blocks") + "\n\n" +
-                "Key: " + key + "\n" +
-                "Value: " + val + "\n" +
-                "Compression Type: " + compType + "\n"+
-                "Compression Codec: " + codec;
+                "compression: " + compressionType;
     }
 }

@@ -36,7 +36,7 @@ public class ParquetDetector implements Detector {
     public String analyze(Configuration configuration, FileStatus fileStatus) throws IOException {
         ParquetMetadata meta = ParquetFileReader.readFooter(configuration, fileStatus);
         String metadataString = meta.toString();
-        return "parquet file with " + meta.getBlocks().size() + " splits\n\n" + metadataString;
+        return "Parquet file with " + meta.getBlocks().size() + " splits\n\n" + metadataString;
     }
 
 }
