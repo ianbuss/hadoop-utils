@@ -7,29 +7,15 @@ import parquet.hadoop.metadata.ParquetMetadata;
 
 import java.io.IOException;
 
-public class ParquetDetector implements Detector {
+public class ParquetDetector extends AbstractDetector {
 
-    private static final byte[] MAGIC = new byte[] { 'P', 'A', 'R', '1' };
-
-    private int version;
+    public ParquetDetector() {
+        magic = new byte[] { 'P', 'A', 'R', '1' };
+    }
 
     @Override
     public String getName() {
         return "parquet";
-    }
-
-    @Override
-    public boolean detect(byte[] header) {
-
-        if (header.length >= MAGIC.length) {
-            for (int i=0; i< MAGIC.length; i++) {
-                if (MAGIC[i] != header[i]) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
     }
 
     @Override

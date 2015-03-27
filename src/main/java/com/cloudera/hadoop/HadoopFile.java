@@ -48,6 +48,9 @@ public class HadoopFile extends Configured implements Tool {
                     return;
                 }
             }
+
+            // Fall back to Linux "file" detector
+
             System.out.println(file + ": octet-stream");
         }
         finally {

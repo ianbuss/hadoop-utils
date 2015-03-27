@@ -11,27 +11,15 @@ import org.apache.hadoop.io.SequenceFile;
 
 import java.io.IOException;
 
-public class ORCFileDetector implements Detector {
+public class ORCFileDetector extends AbstractDetector {
 
-    private static final byte[] MAGIC = new byte[] { 'O', 'R', 'C' };
+    public ORCFileDetector() {
+        magic = new byte[] { 'O', 'R', 'C' };
+    }
 
     @Override
     public String getName() {
         return "ORCFile";
-    }
-
-    @Override
-    public boolean detect(byte[] header) {
-
-        if (header.length >= MAGIC.length) {
-            for (int i=0; i< MAGIC.length; i++) {
-                if (MAGIC[i] != header[i]) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
     }
 
     @Override

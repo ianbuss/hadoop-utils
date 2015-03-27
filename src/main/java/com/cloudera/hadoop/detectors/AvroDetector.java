@@ -9,27 +9,15 @@ import org.apache.hadoop.fs.FileSystem;
 
 import java.io.IOException;
 
-public class AvroDetector implements Detector {
+public class AvroDetector extends AbstractDetector {
 
-    private static final byte[] MAGIC = new byte[] { 'O', 'b', 'j', 0x01 };
+    public AvroDetector() {
+        magic = new byte[] { 'O', 'b', 'j', 0x01 };
+    }
 
     @Override
     public String getName() {
         return "avro";
-    }
-
-    @Override
-    public boolean detect(byte[] header) {
-
-        if (header.length >= MAGIC.length) {
-            for (int i=0; i< MAGIC.length; i++) {
-                if (MAGIC[i] != header[i]) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
     }
 
     @Override

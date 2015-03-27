@@ -7,11 +7,13 @@ import org.apache.hadoop.io.SequenceFile;
 
 import java.io.IOException;
 
-public class SequenceFileDetector implements Detector {
-
-    private static final byte[] MAGIC = new byte[] { 'S', 'E', 'Q' };
+public class SequenceFileDetector extends AbstractDetector {
 
     private int version;
+
+    public SequenceFileDetector() {
+        magic = new byte[] { 'S', 'E', 'Q' };
+    }
 
     @Override
     public String getName() {
@@ -21,13 +23,10 @@ public class SequenceFileDetector implements Detector {
     @Override
     public boolean detect(byte[] header) {
 
-        if (header.length >= MAGIC.length) {
-            for (int i=0; i< MAGIC.length; i++) {
-                if (MAGIC[i] != header[i]) {
-                    return false;
-                }
-            }
+        if (!super.detect(header)) {
+            return false;
         }
+
         if (header.length >= 4) {
             version = (int) header[3];
         }

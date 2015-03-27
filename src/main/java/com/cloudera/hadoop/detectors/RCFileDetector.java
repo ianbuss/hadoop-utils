@@ -8,11 +8,13 @@ import org.apache.hadoop.io.SequenceFile;
 
 import java.io.IOException;
 
-public class RCFileDetector implements Detector {
-
-    private static final byte[] MAGIC = new byte[] { 'R', 'C', 'F' };
+public class RCFileDetector extends AbstractDetector {
 
     private int version;
+
+    public RCFileDetector() {
+        magic = new byte[] { 'R', 'C', 'F' };
+    }
 
     @Override
     public String getName() {
@@ -22,13 +24,10 @@ public class RCFileDetector implements Detector {
     @Override
     public boolean detect(byte[] header) {
 
-        if (header.length >= MAGIC.length) {
-            for (int i=0; i< MAGIC.length; i++) {
-                if (MAGIC[i] != header[i]) {
-                    return false;
-                }
-            }
+        if (!super.detect(header)) {
+            return false;
         }
+
         if (header.length >= 4) {
             version = (int) header[3];
         }
