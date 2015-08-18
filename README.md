@@ -11,5 +11,5 @@ mvn clean package
 Simple utility to print information about files in HDFS akin to the Linux `file` utility. Usage:
 
 ```
-hadoop jar hadoop-utils-*.jar com.cloudera.hadoop.HadoopFile <file>
+hadoop jar hadoop-utils-*.jar com.cloudera.hadoop.analysis.HadoopFile <file>
 ```

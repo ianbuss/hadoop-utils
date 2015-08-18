@@ -1,5 +1,9 @@
 package com.cloudera.hadoop.detectors;
 
+import com.cloudera.hadoop.analysis.CompressionType;
+import com.cloudera.hadoop.analysis.FileReport;
+import com.cloudera.hadoop.analysis.FileType;
+import com.cloudera.hadoop.analysis.advisories.Advisory;
 import org.apache.avro.file.DataFileReader;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.mapred.FsInput;
@@ -8,6 +12,7 @@ import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 
 import java.io.IOException;
+import java.util.List;
 
 public class AvroDetector extends AbstractDetector {
 
@@ -21,20 +26,33 @@ public class AvroDetector extends AbstractDetector {
     }
 
     @Override
-    public String analyze(Configuration configuration, FileStatus fileStatus) throws IOException {
+    public FileReport analyze(Configuration configuration, FileStatus fileStatus) throws IOException {
 
         FileSystem fs = FileSystem.get(configuration);
-        int blocks = fs.getFileBlockLocations(fileStatus, 0, fileStatus.getLen()).length;
-        GenericDatumReader<Object> reader = new GenericDatumReader<Object>();
+        GenericDatumReader<Object> reader = new GenericDatumReader<>();
         DataFileReader<Object> fileReader =
-                new DataFileReader<Object>(new FsInput(fileStatus.getPath(), configuration), reader);
+                new DataFileReader<>(new FsInput(fileStatus.getPath(), configuration), reader);
 
-        String schema = fileReader.getSchema().toString(true);
         String codec = fileReader.getMetaString("avro.codec");
+        CompressionType compressionType = CompressionType.NONE;
 
-        return "Avro file with " + blocks +
-                (blocks == 1 ? " block " : " blocks") + "\n\n" +
-                "schema: " + schema + "\n\n" +
-                "compression: " + codec;
+        if (codec.equals("null")) {
+            compressionType = CompressionType.NONE;
+        } else if (codec.equals("deflate")) {
+            compressionType = CompressionType.DEFLATE;
+        } else if (codec.equals("snappy")) {
+            compressionType = CompressionType.SNAPPY;
+        }
+
+        FileReport fileReport = new FileReport(FileType.AVRO, fileReader.getBlockCount(),
+          fileStatus.getLen(), compressionType, fileStatus.getPath().getName());
+        fileReport.addAdvisories(checkAdvisories(configuration, fileStatus));
+
+        return fileReport;
+    }
+
+    @Override
+    public List<Advisory> checkAdvisories(Configuration configuration, FileStatus fileStatus) throws IOException {
+        return super.checkAdvisories(configuration, fileStatus);
     }
 }

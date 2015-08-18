@@ -1,5 +1,8 @@
 package com.cloudera.hadoop.detectors;
 
+import com.cloudera.hadoop.analysis.CompressionType;
+import com.cloudera.hadoop.analysis.FileReport;
+import com.cloudera.hadoop.analysis.FileType;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -35,21 +38,17 @@ public class SequenceFileDetector extends AbstractDetector {
     }
 
     @Override
-    public String analyze(Configuration configuration, FileStatus fileStatus) throws IOException {
+    public FileReport analyze(Configuration configuration, FileStatus fileStatus) throws IOException {
 
         FileSystem fs = FileSystem.get(configuration);
         SequenceFile.Reader reader = new SequenceFile.Reader(fs, fileStatus.getPath(), configuration);
-        String codec = reader.getCompressionCodec().getClass().getName();
-        String compType = reader.getCompressionType().toString();
-        String key = reader.getKeyClassName();
-        String val = reader.getValueClassName();
+        CompressionType compressionType = CompressionType.fromHadoopCodec(reader.getCompressionCodec());
         int blocks = fs.getFileBlockLocations(fileStatus, 0, fileStatus.getLen()).length;
 
-        return "SequenceFile (version " + version + ") with " +
-                blocks + (blocks == 1 ? " block" : " blocks") + "\n\n" +
-                "Key: " + key + "\n" +
-                "Value: " + val + "\n" +
-                "Compression Type: " + compType + "\n"+
-                "Compression Codec: " + codec;
+        FileReport report = new FileReport(FileType.SEQUENCE, blocks,
+          fileStatus.getLen(), compressionType, fileStatus.getPath().getName());
+        report.addAdvisories(checkAdvisories(configuration, fileStatus));
+
+        return report;
     }
 }
