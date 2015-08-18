@@ -24,9 +24,9 @@ public class SequenceFileDetector extends AbstractDetector {
     }
 
     @Override
-    public boolean detect(byte[] header) {
+    public boolean detect(byte[] header, int read) {
 
-        if (!super.detect(header)) {
+        if (!super.detect(header, read)) {
             return false;
         }
 

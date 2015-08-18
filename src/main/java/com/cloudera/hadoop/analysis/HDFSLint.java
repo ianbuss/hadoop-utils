@@ -46,10 +46,18 @@ public class HDFSLint extends Configured implements Tool {
     public void inspect(String path) throws IOException {
         Path fsPath = new Path(path);
         FileStatus fileStatus = fileSystem.getFileStatus(fsPath);
+        inspect(fileStatus);
+    }
+
+    public void inspect(FileStatus fileStatus) throws IOException {
         if (fileStatus.isDirectory()) {
-            for (FileStatus status : fileSystem.listStatus(fsPath)) {
-                FileReport report = inspectFile(status);
-                System.out.println(report.toJson());
+            for (FileStatus status : fileSystem.listStatus(fileStatus.getPath())) {
+                if (status.isDirectory() && searchRecursively) {
+                    inspect(status);
+                } else if (status.isFile()) {
+                    FileReport report = inspectFile(status);
+                    System.out.println(report.toJson());
+                }
             }
         } else {
             FileReport report = inspectFile(fileStatus);
@@ -59,11 +67,11 @@ public class HDFSLint extends Configured implements Tool {
 
     public FileReport inspectFile(FileStatus fileStatus) throws IOException {
         FSDataInputStream is = fileSystem.open(fileStatus.getPath());
-        is.read(header, 0, HEADER_READ_LEN);
+        int read = is.read(header, 0, HEADER_READ_LEN);
 
         try {
             for (Detector detector : REGISTERED_DETECTORS) {
-                if (detector.detect(header)) {
+                if (detector.detect(header, read)) {
                     return detector.analyze(configuration, fileStatus);
                 }
             }

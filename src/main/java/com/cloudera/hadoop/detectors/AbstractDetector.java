@@ -21,19 +21,18 @@ public abstract class AbstractDetector implements Detector {
   public abstract String getName();
 
   @Override
-  public boolean detect(byte[] header) {
+  public boolean detect(byte[] header, int read) {
 
-    if (header.length >= magic.length) {
+    if (header.length >= magic.length && read >= magic.length) {
       for (int i=0; i< magic.length; i++) {
         if (magic[i] != header[i]) {
           return false;
         }
       }
+      return true;
     } else {
       return false;
     }
-
-    return true;
 
   }
 

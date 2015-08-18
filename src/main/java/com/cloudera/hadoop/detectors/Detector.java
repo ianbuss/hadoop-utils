@@ -13,7 +13,7 @@ public interface Detector {
 
     String getName();
 
-    boolean detect(byte[] header);
+    boolean detect(byte[] header, int read);
 
     FileReport analyze(Configuration configuration, FileStatus fileStatus) throws IOException;
 
