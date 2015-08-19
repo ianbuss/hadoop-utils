@@ -6,6 +6,7 @@ import com.cloudera.hadoop.analysis.FileType;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.shell.PathData;
 import org.apache.hadoop.io.SequenceFile;
 
 import java.io.IOException;
@@ -38,16 +39,15 @@ public class SequenceFileDetector extends AbstractDetector {
     }
 
     @Override
-    public FileReport analyze(Configuration configuration, FileStatus fileStatus) throws IOException {
-
-        FileSystem fs = FileSystem.get(configuration);
-        SequenceFile.Reader reader = new SequenceFile.Reader(fs, fileStatus.getPath(), configuration);
+    public FileReport analyze(PathData file) throws IOException {
+        SequenceFile.Reader reader = new SequenceFile.Reader(file.fs.getConf(),
+          SequenceFile.Reader.file(file.path));
         CompressionType compressionType = CompressionType.fromHadoopCodec(reader.getCompressionCodec());
-        int blocks = fs.getFileBlockLocations(fileStatus, 0, fileStatus.getLen()).length;
+        int blocks = file.fs.getFileBlockLocations(file.stat, 0, file.stat.getLen()).length;
 
         FileReport report = new FileReport(FileType.SEQUENCE, blocks,
-          fileStatus.getLen(), compressionType, fileStatus.getPath().getName());
-        report.addAdvisories(checkAdvisories(configuration, fileStatus));
+          file.stat.getLen(), compressionType, file.path.toString());
+        report.addAdvisories(checkAdvisories(file));
 
         return report;
     }

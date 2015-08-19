@@ -6,6 +6,7 @@ import com.cloudera.hadoop.analysis.FileType;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.shell.PathData;
 import org.apache.hadoop.hive.ql.io.RCFile;
 import org.apache.hadoop.hive.ql.io.orc.CompressionKind;
 import org.apache.hadoop.hive.ql.io.orc.Metadata;
@@ -27,10 +28,8 @@ public class ORCFileDetector extends AbstractDetector {
     }
 
     @Override
-    public FileReport analyze(Configuration configuration, FileStatus fileStatus) throws IOException {
-
-        FileSystem fs = FileSystem.get(configuration);
-        Reader reader = OrcFile.createReader(fs, fileStatus.getPath());
+    public FileReport analyze(PathData file) throws IOException {
+        Reader reader = OrcFile.createReader(file.fs, file.path);
         CompressionKind compressionKind = reader.getCompression();
         CompressionType compressionType = CompressionType.NONE;
         if (compressionKind.equals(CompressionKind.LZO)) {
@@ -40,11 +39,11 @@ public class ORCFileDetector extends AbstractDetector {
         } else if (compressionKind.equals(CompressionKind.ZLIB)) {
             compressionType = CompressionType.ZLIB;
         }
-        int blocks = fs.getFileBlockLocations(fileStatus, 0, fileStatus.getLen()).length;
+        int blocks = file.fs.getFileBlockLocations(file.stat, 0, file.stat.getLen()).length;
 
         FileReport report = new FileReport(FileType.ORC, blocks,
-          fileStatus.getLen(), compressionType, fileStatus.getPath().getName());
-        report.addAdvisories(checkAdvisories(configuration, fileStatus));
+          file.stat.getLen(), compressionType, file.path.toString());
+        report.addAdvisories(checkAdvisories(file));
 
         return report;
     }

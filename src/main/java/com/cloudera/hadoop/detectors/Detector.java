@@ -5,6 +5,7 @@ import com.cloudera.hadoop.analysis.advisories.Advisory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.shell.PathData;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,8 +16,8 @@ public interface Detector {
 
     boolean detect(byte[] header, int read);
 
-    FileReport analyze(Configuration configuration, FileStatus fileStatus) throws IOException;
+    FileReport analyze(PathData file) throws IOException;
 
-    List<Advisory> checkAdvisories(Configuration configuration, FileStatus fileStatus) throws IOException;
+    List<Advisory> checkAdvisories(PathData file) throws IOException;
 
 }

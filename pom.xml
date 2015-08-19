@@ -15,7 +15,6 @@
         <parquet.avro.version>1.3.2</parquet.avro.version>
         <parquet.hadoop.version>1.5.0-cdh5.4.3</parquet.hadoop.version>
         <parquet.format.version>2.1.0-cdh5.4.3</parquet.format.version>
-        <tika.version>1.6</tika.version>
         <junit.version>4.11</junit.version>
     </properties>
 
@@ -49,12 +48,6 @@
             <groupId>com.twitter</groupId>
             <artifactId>parquet-avro</artifactId>
             <version>${parquet.avro.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tika</groupId>
-            <artifactId>tika-core</artifactId>
-            <version>${tika.version}</version>
         </dependency>
 
         <dependency>

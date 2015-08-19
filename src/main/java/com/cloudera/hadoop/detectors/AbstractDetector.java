@@ -4,6 +4,7 @@ import com.cloudera.hadoop.analysis.advisories.Advisory;
 import com.cloudera.hadoop.analysis.FileReport;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.shell.PathData;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,15 +38,13 @@ public abstract class AbstractDetector implements Detector {
   }
 
   @Override
-  public abstract FileReport analyze(Configuration configuration,
-                                 FileStatus fileStatus) throws IOException;
+  public abstract FileReport analyze(PathData file) throws IOException;
 
   @Override
-  public List<Advisory> checkAdvisories(Configuration configuration,
-                                  FileStatus fileStatus) throws IOException {
+  public List<Advisory> checkAdvisories(PathData file) throws IOException {
     List<Advisory> applicableAdvisories = new ArrayList<>();
     for (Advisory advisory : advisories) {
-      if (advisory.check.checkForAdvisory(configuration, fileStatus)) {
+      if (advisory.check.checkForAdvisory(file)) {
         applicableAdvisories.add(advisory);
       }
     }

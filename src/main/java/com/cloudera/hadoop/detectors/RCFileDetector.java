@@ -6,6 +6,7 @@ import com.cloudera.hadoop.analysis.FileType;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.shell.PathData;
 import org.apache.hadoop.hive.ql.io.RCFile;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.compress.*;
@@ -40,16 +41,15 @@ public class RCFileDetector extends AbstractDetector {
     }
 
     @Override
-    public FileReport analyze(Configuration configuration, FileStatus fileStatus) throws IOException {
+    public FileReport analyze(PathData file) throws IOException {
 
-        FileSystem fs = FileSystem.get(configuration);
-        RCFile.Reader reader = new RCFile.Reader(fs, fileStatus.getPath(), configuration);
-        int blocks = fs.getFileBlockLocations(fileStatus, 0, fileStatus.getLen()).length;
+        RCFile.Reader reader = new RCFile.Reader(file.fs, file.path, file.fs.getConf());
+        int blocks = file.fs.getFileBlockLocations(file.stat, 0, file.stat.getLen()).length;
         CompressionType compressionType = CompressionType.fromHadoopCodec(reader.getCompressionCodec());
 
         FileReport report = new FileReport(FileType.RCFILE, blocks,
-          fileStatus.getLen(), compressionType, fileStatus.getPath().getName());
-        report.addAdvisories(checkAdvisories(configuration, fileStatus));
+          file.stat.getLen(), compressionType, file.path.toString());
+        report.addAdvisories(checkAdvisories(file));
 
         return report;
     }

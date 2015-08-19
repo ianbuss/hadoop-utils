@@ -6,6 +6,8 @@ import com.cloudera.hadoop.analysis.FileType;
 import com.cloudera.hadoop.analysis.advisories.Advisory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.shell.PathData;
+import parquet.format.converter.ParquetMetadataConverter;
 import parquet.hadoop.ParquetFileReader;
 import parquet.hadoop.metadata.ColumnChunkMetaData;
 import parquet.hadoop.metadata.CompressionCodecName;
@@ -30,8 +32,9 @@ public class ParquetDetector extends AbstractDetector {
     }
 
     @Override
-    public FileReport analyze(Configuration configuration, FileStatus fileStatus) throws IOException {
-        ParquetMetadata meta = ParquetFileReader.readFooter(configuration, fileStatus);
+    public FileReport analyze(PathData file) throws IOException {
+        ParquetMetadata meta = ParquetFileReader.readFooter(file.fs.getConf(),
+          file.stat, ParquetMetadataConverter.NO_FILTER);
 
         // This is a bit naff but just check for any compression
         // in any column in the first block for now
@@ -51,17 +54,17 @@ public class ParquetDetector extends AbstractDetector {
         }
 
         FileReport report = new FileReport(FileType.PARQUET, meta.getBlocks().size(),
-          fileStatus.getLen(), compressionType, fileStatus.getPath().getName());
-        report.addAdvisories(checkAdvisories(configuration, fileStatus));
+          file.stat.getLen(), compressionType, file.path.toString());
+        report.addAdvisories(checkAdvisories(file));
 
         return report;
     }
 
     @Override
-    public List<Advisory> checkAdvisories(Configuration configuration, FileStatus fileStatus) throws IOException {
-        List<Advisory> allAdvisories = super.checkAdvisories(configuration, fileStatus);
+    public List<Advisory> checkAdvisories(PathData file) throws IOException {
+        List<Advisory> allAdvisories = super.checkAdvisories(file);
         for (Advisory advisory : advisories) {
-            if (advisory.check.checkForAdvisory(configuration, fileStatus)) {
+            if (advisory.check.checkForAdvisory(file)) {
                 allAdvisories.add(advisory);
             }
         }

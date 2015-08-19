@@ -18,8 +18,9 @@ public class HDFSLintTest {
     }
 
     @Test
-    public void testTextFile() {
-
+    public void testTextFile() throws IOException {
+        HDFSLint hadoopFile = new HDFSLint(configuration);
+        hadoopFile.inspect("src/test/resources/testtext.txt");
     }
 
     @Test

@@ -7,9 +7,7 @@ import com.cloudera.hadoop.analysis.advisories.Advisory;
 import org.apache.avro.file.DataFileReader;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.mapred.FsInput;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.shell.PathData;
 
 import java.io.IOException;
 import java.util.List;
@@ -26,12 +24,10 @@ public class AvroDetector extends AbstractDetector {
     }
 
     @Override
-    public FileReport analyze(Configuration configuration, FileStatus fileStatus) throws IOException {
-
-        FileSystem fs = FileSystem.get(configuration);
+    public FileReport analyze(PathData file) throws IOException {
         GenericDatumReader<Object> reader = new GenericDatumReader<>();
         DataFileReader<Object> fileReader =
-                new DataFileReader<>(new FsInput(fileStatus.getPath(), configuration), reader);
+                new DataFileReader<>(new FsInput(file.path, file.fs), reader);
 
         String codec = fileReader.getMetaString("avro.codec");
         CompressionType compressionType = CompressionType.NONE;
@@ -45,14 +41,14 @@ public class AvroDetector extends AbstractDetector {
         }
 
         FileReport fileReport = new FileReport(FileType.AVRO, fileReader.getBlockCount(),
-          fileStatus.getLen(), compressionType, fileStatus.getPath().getName());
-        fileReport.addAdvisories(checkAdvisories(configuration, fileStatus));
+          file.stat.getLen(), compressionType, file.path.toString());
+        fileReport.addAdvisories(checkAdvisories(file));
 
         return fileReport;
     }
 
     @Override
-    public List<Advisory> checkAdvisories(Configuration configuration, FileStatus fileStatus) throws IOException {
-        return super.checkAdvisories(configuration, fileStatus);
+    public List<Advisory> checkAdvisories(PathData file) throws IOException {
+        return super.checkAdvisories(file);
     }
 }
