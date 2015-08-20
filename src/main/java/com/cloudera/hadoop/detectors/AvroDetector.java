@@ -24,31 +24,33 @@ public class AvroDetector extends AbstractDetector {
     }
 
     @Override
-    public FileReport analyze(PathData file) throws IOException {
+    public FileReport analyze(PathData file, String scanDate) throws IOException {
+        FileReport fileReport;
         GenericDatumReader<Object> reader = new GenericDatumReader<>();
-        DataFileReader<Object> fileReader =
-                new DataFileReader<>(new FsInput(file.path, file.fs), reader);
+        try (DataFileReader<Object> fileReader =
+                new DataFileReader<>(new FsInput(file.path, file.fs), reader)) {
 
-        String codec = fileReader.getMetaString("avro.codec");
-        CompressionType compressionType = CompressionType.NONE;
+            String codec = fileReader.getMetaString("avro.codec");
+            CompressionType compressionType = CompressionType.NONE;
 
-        if (codec.equals("null")) {
-            compressionType = CompressionType.NONE;
-        } else if (codec.equals("deflate")) {
-            compressionType = CompressionType.DEFLATE;
-        } else if (codec.equals("snappy")) {
-            compressionType = CompressionType.SNAPPY;
+            if (codec == null || codec.isEmpty() || codec.equals("null")) {
+                compressionType = CompressionType.NONE;
+            } else if (codec.equals("deflate")) {
+                compressionType = CompressionType.DEFLATE;
+            } else if (codec.equals("snappy")) {
+                compressionType = CompressionType.SNAPPY;
+            }
+
+            fileReport = new FileReport(FileType.AVRO, fileReader.getBlockCount(),
+              file.stat.getLen(), compressionType, file.path.toString(), scanDate);
+            fileReport.addAdvisories(checkAdvisories(fileReport, file));
         }
-
-        FileReport fileReport = new FileReport(FileType.AVRO, fileReader.getBlockCount(),
-          file.stat.getLen(), compressionType, file.path.toString());
-        fileReport.addAdvisories(checkAdvisories(file));
 
         return fileReport;
     }
 
     @Override
-    public List<Advisory> checkAdvisories(PathData file) throws IOException {
-        return super.checkAdvisories(file);
+    public List<Advisory> checkAdvisories(FileReport fileReport, PathData file) throws IOException {
+        return super.checkAdvisories(fileReport, file);
     }
 }

@@ -28,7 +28,7 @@ public class ORCFileDetector extends AbstractDetector {
     }
 
     @Override
-    public FileReport analyze(PathData file) throws IOException {
+    public FileReport analyze(PathData file, String scanDate) throws IOException {
         Reader reader = OrcFile.createReader(file.fs, file.path);
         CompressionKind compressionKind = reader.getCompression();
         CompressionType compressionType = CompressionType.NONE;
@@ -42,8 +42,8 @@ public class ORCFileDetector extends AbstractDetector {
         int blocks = file.fs.getFileBlockLocations(file.stat, 0, file.stat.getLen()).length;
 
         FileReport report = new FileReport(FileType.ORC, blocks,
-          file.stat.getLen(), compressionType, file.path.toString());
-        report.addAdvisories(checkAdvisories(file));
+          file.stat.getLen(), compressionType, file.path.toString(), scanDate);
+        report.addAdvisories(checkAdvisories(report, file));
 
         return report;
     }

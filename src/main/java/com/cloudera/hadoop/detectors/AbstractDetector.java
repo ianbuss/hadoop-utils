@@ -38,13 +38,13 @@ public abstract class AbstractDetector implements Detector {
   }
 
   @Override
-  public abstract FileReport analyze(PathData file) throws IOException;
+  public abstract FileReport analyze(PathData file, String scanDate) throws IOException;
 
   @Override
-  public List<Advisory> checkAdvisories(PathData file) throws IOException {
+  public List<Advisory> checkAdvisories(FileReport fileReport, PathData file) throws IOException {
     List<Advisory> applicableAdvisories = new ArrayList<>();
     for (Advisory advisory : advisories) {
-      if (advisory.check.checkForAdvisory(file)) {
+      if (advisory.check.checkForAdvisory(fileReport, file)) {
         applicableAdvisories.add(advisory);
       }
     }

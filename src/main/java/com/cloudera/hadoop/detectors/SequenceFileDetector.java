@@ -39,16 +39,21 @@ public class SequenceFileDetector extends AbstractDetector {
     }
 
     @Override
-    public FileReport analyze(PathData file) throws IOException {
-        SequenceFile.Reader reader = new SequenceFile.Reader(file.fs.getConf(),
-          SequenceFile.Reader.file(file.path));
-        CompressionType compressionType = CompressionType.fromHadoopCodec(reader.getCompressionCodec());
-        int blocks = file.fs.getFileBlockLocations(file.stat, 0, file.stat.getLen()).length;
+    public FileReport analyze(PathData file, String scanDate) throws IOException {
+        SequenceFile.Reader reader = null;
+        try {
+            reader = new SequenceFile.Reader(file.fs.getConf(),
+              SequenceFile.Reader.file(file.path));
+            CompressionType compressionType = CompressionType.fromHadoopCodec(reader.getCompressionCodec());
+            int blocks = file.fs.getFileBlockLocations(file.stat, 0, file.stat.getLen()).length;
 
-        FileReport report = new FileReport(FileType.SEQUENCE, blocks,
-          file.stat.getLen(), compressionType, file.path.toString());
-        report.addAdvisories(checkAdvisories(file));
+            FileReport report = new FileReport(FileType.SEQUENCE, blocks,
+              file.stat.getLen(), compressionType, file.path.toString(), scanDate);
+            report.addAdvisories(checkAdvisories(report, file));
 
-        return report;
+            return report;
+        } finally {
+            if (reader != null) reader.close();
+        }
     }
 }

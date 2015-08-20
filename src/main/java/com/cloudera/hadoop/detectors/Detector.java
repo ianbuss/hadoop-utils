@@ -16,8 +16,8 @@ public interface Detector {
 
     boolean detect(byte[] header, int read);
 
-    FileReport analyze(PathData file) throws IOException;
+    FileReport analyze(PathData file, String scanDate) throws IOException;
 
-    List<Advisory> checkAdvisories(PathData file) throws IOException;
+    List<Advisory> checkAdvisories(FileReport fileReport, PathData file) throws IOException;
 
 }

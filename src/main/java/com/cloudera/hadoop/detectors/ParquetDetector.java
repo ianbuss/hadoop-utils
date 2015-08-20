@@ -4,8 +4,6 @@ import com.cloudera.hadoop.analysis.CompressionType;
 import com.cloudera.hadoop.analysis.FileReport;
 import com.cloudera.hadoop.analysis.FileType;
 import com.cloudera.hadoop.analysis.advisories.Advisory;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.shell.PathData;
 import parquet.format.converter.ParquetMetadataConverter;
 import parquet.hadoop.ParquetFileReader;
@@ -32,39 +30,41 @@ public class ParquetDetector extends AbstractDetector {
     }
 
     @Override
-    public FileReport analyze(PathData file) throws IOException {
+    public FileReport analyze(PathData file, String scanDate) throws IOException {
         ParquetMetadata meta = ParquetFileReader.readFooter(file.fs.getConf(),
           file.stat, ParquetMetadataConverter.NO_FILTER);
 
         // This is a bit naff but just check for any compression
         // in any column in the first block for now
         CompressionType compressionType = CompressionType.NONE;
-        for (ColumnChunkMetaData metaData : meta.getBlocks().get(0).getColumns()) {
-            CompressionCodecName codecName = metaData.getCodec();
-            if (codecName.equals(CompressionCodecName.GZIP)) {
-                compressionType = CompressionType.GZIP;
-                break;
-            } else if (codecName.equals(CompressionCodecName.LZO)) {
-                compressionType = CompressionType.LZO;
-                break;
-            } else if (codecName.equals(CompressionCodecName.SNAPPY)) {
-                compressionType = CompressionType.SNAPPY;
-                break;
+        if (meta.getBlocks().size() > 0) {
+            for (ColumnChunkMetaData metaData : meta.getBlocks().get(0).getColumns()) {
+                CompressionCodecName codecName = metaData.getCodec();
+                if (codecName.equals(CompressionCodecName.GZIP)) {
+                    compressionType = CompressionType.GZIP;
+                    break;
+                } else if (codecName.equals(CompressionCodecName.LZO)) {
+                    compressionType = CompressionType.LZO;
+                    break;
+                } else if (codecName.equals(CompressionCodecName.SNAPPY)) {
+                    compressionType = CompressionType.SNAPPY;
+                    break;
+                }
             }
         }
 
         FileReport report = new FileReport(FileType.PARQUET, meta.getBlocks().size(),
-          file.stat.getLen(), compressionType, file.path.toString());
-        report.addAdvisories(checkAdvisories(file));
+          file.stat.getLen(), compressionType, file.path.toString(), scanDate);
+        report.addAdvisories(checkAdvisories(report, file));
 
         return report;
     }
 
     @Override
-    public List<Advisory> checkAdvisories(PathData file) throws IOException {
-        List<Advisory> allAdvisories = super.checkAdvisories(file);
+    public List<Advisory> checkAdvisories(FileReport fileReport, PathData file) throws IOException {
+        List<Advisory> allAdvisories = super.checkAdvisories(fileReport, file);
         for (Advisory advisory : advisories) {
-            if (advisory.check.checkForAdvisory(file)) {
+            if (advisory.check.checkForAdvisory(fileReport, file)) {
                 allAdvisories.add(advisory);
             }
         }

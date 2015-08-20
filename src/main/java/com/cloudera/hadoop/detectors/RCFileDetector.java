@@ -41,16 +41,21 @@ public class RCFileDetector extends AbstractDetector {
     }
 
     @Override
-    public FileReport analyze(PathData file) throws IOException {
+    public FileReport analyze(PathData file, String scanDate) throws IOException {
 
-        RCFile.Reader reader = new RCFile.Reader(file.fs, file.path, file.fs.getConf());
-        int blocks = file.fs.getFileBlockLocations(file.stat, 0, file.stat.getLen()).length;
-        CompressionType compressionType = CompressionType.fromHadoopCodec(reader.getCompressionCodec());
+        RCFile.Reader reader = null;
+        try {
+            reader = new RCFile.Reader(file.fs, file.path, file.fs.getConf());
+            int blocks = file.fs.getFileBlockLocations(file.stat, 0, file.stat.getLen()).length;
+            CompressionType compressionType = CompressionType.fromHadoopCodec(reader.getCompressionCodec());
 
-        FileReport report = new FileReport(FileType.RCFILE, blocks,
-          file.stat.getLen(), compressionType, file.path.toString());
-        report.addAdvisories(checkAdvisories(file));
+            FileReport report = new FileReport(FileType.RCFILE, blocks,
+              file.stat.getLen(), compressionType, file.path.toString(), scanDate);
+            report.addAdvisories(checkAdvisories(report, file));
 
-        return report;
+            return report;
+        } finally {
+            if (reader != null) reader.close();
+        }
     }
 }
