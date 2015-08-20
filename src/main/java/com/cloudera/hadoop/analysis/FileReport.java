@@ -71,6 +71,7 @@ public class FileReport {
     doc.addField("fileName", fileName);
     doc.addField("fileSize", fileSize);
     doc.addField("fileType", type.name());
+    doc.addField("numBlocks", numBlocks);
     doc.addField("compressionType", compressionType.name());
     List<String> advisoryStrings = new ArrayList<>();
     for (Advisory advisory : advisories) advisoryStrings.add(advisory.name());

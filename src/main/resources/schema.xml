@@ -45,7 +45,7 @@
     that avoids logging every request
 -->
 
-<schema name="hdfslint" version="1.0">
+<schema name="hdfslint" version="1.5">
   <!-- attribute "name" is the name of this schema and is only used for display purposes.
        version="x.y" is Solr's version number for the schema syntax and 
        semantics.  It should not normally be changed by applications.
@@ -106,12 +106,18 @@
       trailing underscores (e.g. _version_) are reserved.
    -->
 
+   <field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false" />
    <field name="scanDate" type="tdate" indexed="true" stored="true" />
    <field name="fileName" type="string" indexed="true" stored="true" />
-   <field name="fileSize" type="tlong" indexed="true" stored="true"/>
+   <field name="fileSize" type="tlong" indexed="true" stored="true" />
+   <field name="numBlocks" type="tint" indexed="true" stored="true" />
    <field name="fileType" type="string" indexed="true" stored="true" />
    <field name="compressionType" type="string" indexed="true" stored="true"/>
    <field name="advisory" type="string" indexed="true" stored="true" multiValued="true" />
+   <field name="description" type="text_en" indexed="true" stored="true" />
+   <field name="text" type="text_general" indexed="true" stored="false" multiValued="true" />
+
+   <field name="_version_" type="long" indexed="true" stored="true"/>
    
  </fields>
 
@@ -119,7 +125,7 @@
  <!-- Field to use to determine and enforce document uniqueness. 
       Unless this field is marked with required="false", it will be a required field
    -->
- <!--<uniqueKey>id</uniqueKey>-->
+ <uniqueKey>id</uniqueKey>
 
  <!-- DEPRECATED: The defaultSearchField is consulted by various query parsers when
   parsing a query string that isn't explicit about the field.  Machine (non-user)
@@ -139,7 +145,8 @@
   <!-- copyField commands copy one field to another at the time a document
         is added to the index.  It's used either to index the same field differently,
         or to add multiple fields to the same field for easier/faster searching.  -->
-
+  <copyField source="fileName" dest="text" maxChars="500" />
+  <copyField source="description" dest="text" maxChars="500" />
   
   <types>
     <!-- field type definitions. The "name" attribute is
