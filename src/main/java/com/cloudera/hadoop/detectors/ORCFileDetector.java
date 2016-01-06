@@ -3,16 +3,10 @@ package com.cloudera.hadoop.detectors;
 import com.cloudera.hadoop.analysis.CompressionType;
 import com.cloudera.hadoop.analysis.FileReport;
 import com.cloudera.hadoop.analysis.FileType;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.shell.PathData;
-import org.apache.hadoop.hive.ql.io.RCFile;
 import org.apache.hadoop.hive.ql.io.orc.CompressionKind;
-import org.apache.hadoop.hive.ql.io.orc.Metadata;
 import org.apache.hadoop.hive.ql.io.orc.OrcFile;
 import org.apache.hadoop.hive.ql.io.orc.Reader;
-import org.apache.hadoop.io.SequenceFile;
 
 import java.io.IOException;
 
