@@ -1,9 +1,9 @@
-package com.cloudera.hadoop.detectors;
+package com.cloudera.fce.hdfslint.detectors;
 
-import com.cloudera.hadoop.analysis.CompressionType;
-import com.cloudera.hadoop.analysis.FileReport;
-import com.cloudera.hadoop.analysis.FileType;
-import com.cloudera.hadoop.analysis.advisories.Advisory;
+import com.cloudera.fce.hdfslint.analysis.FileReport;
+import com.cloudera.fce.hdfslint.analysis.FileType;
+import com.cloudera.fce.hdfslint.analysis.CompressionType;
+import com.cloudera.fce.hdfslint.analysis.advisories.Advisory;
 import org.apache.avro.file.DataFileReader;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.mapred.FsInput;

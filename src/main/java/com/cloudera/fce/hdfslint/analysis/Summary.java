@@ -1,9 +1,8 @@
-package com.cloudera.hadoop.analysis;
+package com.cloudera.fce.hdfslint.analysis;
 
-import com.cloudera.hadoop.analysis.advisories.Advisory;
+import com.cloudera.fce.hdfslint.analysis.advisories.Advisory;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Summary {

@@ -1,6 +1,6 @@
-package com.cloudera.hadoop;
+package com.cloudera.fce.hdfslint;
 
-import com.cloudera.hadoop.detectors.*;
+import com.cloudera.fce.hdfslint.detectors.*;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FSDataInputStream;

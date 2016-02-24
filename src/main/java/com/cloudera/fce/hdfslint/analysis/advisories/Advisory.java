@@ -1,4 +1,4 @@
-package com.cloudera.hadoop.analysis.advisories;
+package com.cloudera.fce.hdfslint.analysis.advisories;
 
 public enum Advisory {
 

@@ -1,4 +1,4 @@
-package com.cloudera.hadoop;
+package com.cloudera.fce.hdfslint;
 
 import org.apache.avro.mapred.AvroInputFormat;
 import org.apache.hadoop.conf.Configuration;

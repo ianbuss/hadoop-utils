@@ -1,8 +1,8 @@
-package com.cloudera.hadoop.detectors;
+package com.cloudera.fce.hdfslint.detectors;
 
-import com.cloudera.hadoop.analysis.CompressionType;
-import com.cloudera.hadoop.analysis.FileReport;
-import com.cloudera.hadoop.analysis.FileType;
+import com.cloudera.fce.hdfslint.analysis.FileReport;
+import com.cloudera.fce.hdfslint.analysis.CompressionType;
+import com.cloudera.fce.hdfslint.analysis.FileType;
 import org.apache.hadoop.fs.shell.PathData;
 import org.apache.hadoop.hive.ql.io.orc.CompressionKind;
 import org.apache.hadoop.hive.ql.io.orc.OrcFile;

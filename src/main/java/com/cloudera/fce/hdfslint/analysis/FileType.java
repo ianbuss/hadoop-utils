@@ -1,4 +1,4 @@
-package com.cloudera.hadoop.analysis;
+package com.cloudera.fce.hdfslint.analysis;
 
 public enum FileType {
 

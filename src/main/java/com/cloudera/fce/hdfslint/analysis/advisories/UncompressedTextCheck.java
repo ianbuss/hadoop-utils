@@ -1,8 +1,8 @@
-package com.cloudera.hadoop.analysis.advisories;
+package com.cloudera.fce.hdfslint.analysis.advisories;
 
-import com.cloudera.hadoop.analysis.CompressionType;
-import com.cloudera.hadoop.analysis.FileReport;
-import com.cloudera.hadoop.analysis.FileType;
+import com.cloudera.fce.hdfslint.analysis.FileReport;
+import com.cloudera.fce.hdfslint.analysis.CompressionType;
+import com.cloudera.fce.hdfslint.analysis.FileType;
 import org.apache.hadoop.fs.shell.PathData;
 
 import java.io.IOException;

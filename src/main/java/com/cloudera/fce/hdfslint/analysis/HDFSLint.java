@@ -1,6 +1,6 @@
-package com.cloudera.hadoop.analysis;
+package com.cloudera.fce.hdfslint.analysis;
 
-import com.cloudera.hadoop.detectors.*;
+import com.cloudera.fce.hdfslint.detectors.*;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -9,11 +9,8 @@ import org.apache.hadoop.util.Tool;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CloudSolrServer;
 import org.apache.solr.common.SolrInputDocument;
-import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 import java.io.IOException;
 import java.io.PrintStream;

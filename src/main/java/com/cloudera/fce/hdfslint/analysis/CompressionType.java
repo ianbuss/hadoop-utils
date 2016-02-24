@@ -1,4 +1,4 @@
-package com.cloudera.hadoop.analysis;
+package com.cloudera.fce.hdfslint.analysis;
 
 import org.apache.hadoop.io.compress.*;
 

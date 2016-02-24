@@ -1,8 +1,7 @@
-package com.cloudera.hadoop.analysis;
+package com.cloudera.fce.hdfslint.analysis;
 
-import com.cloudera.hadoop.analysis.advisories.Advisory;
+import com.cloudera.fce.hdfslint.analysis.advisories.Advisory;
 import org.apache.solr.common.SolrInputDocument;
-import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;

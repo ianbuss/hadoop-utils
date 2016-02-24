@@ -17,6 +17,7 @@
         <parquet.format.version>2.1.0-cdh5.4.3</parquet.format.version>
         <solr.version>4.10.3</solr.version>
         <junit.version>4.11</junit.version>
+        <spark.version>1.3.0-cdh5.4.3</spark.version>
     </properties>
 
     <dependencies>
@@ -89,6 +90,12 @@
             <version>${solr.version}</version>
         </dependency>
 
+        <dependency>
+          <groupId>org.apache.spark</groupId>
+          <artifactId>spark-core_2.10</artifactId>
+          <version>${spark.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -131,6 +138,19 @@
                                 <descriptor>src/main/assembly/package.xml</descriptor>
                             </descriptors>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <version>2.15.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>testCompile</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

@@ -1,11 +1,8 @@
-package com.cloudera.hadoop.detectors;
+package com.cloudera.fce.hdfslint.detectors;
 
-import com.cloudera.hadoop.analysis.CompressionType;
-import com.cloudera.hadoop.analysis.FileReport;
-import com.cloudera.hadoop.analysis.FileType;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.FileSystem;
+import com.cloudera.fce.hdfslint.analysis.FileReport;
+import com.cloudera.fce.hdfslint.analysis.FileType;
+import com.cloudera.fce.hdfslint.analysis.CompressionType;
 import org.apache.hadoop.fs.shell.PathData;
 import org.apache.hadoop.io.SequenceFile;
 

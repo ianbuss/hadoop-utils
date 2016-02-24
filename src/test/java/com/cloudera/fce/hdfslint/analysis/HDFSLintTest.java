@@ -1,10 +1,8 @@
-package com.cloudera.hadoop.analysis;
+package com.cloudera.fce.hdfslint.analysis;
 
 import org.apache.hadoop.conf.Configuration;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.IOException;
 
 public class HDFSLintTest {
 

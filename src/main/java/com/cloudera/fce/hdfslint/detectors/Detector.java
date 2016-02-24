@@ -1,10 +1,7 @@
-package com.cloudera.hadoop.detectors;
+package com.cloudera.fce.hdfslint.detectors;
 
-import com.cloudera.hadoop.analysis.FileReport;
-import com.cloudera.hadoop.analysis.advisories.Advisory;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataInputStream;
-import org.apache.hadoop.fs.FileStatus;
+import com.cloudera.fce.hdfslint.analysis.FileReport;
+import com.cloudera.fce.hdfslint.analysis.advisories.Advisory;
 import org.apache.hadoop.fs.shell.PathData;
 
 import java.io.IOException;
