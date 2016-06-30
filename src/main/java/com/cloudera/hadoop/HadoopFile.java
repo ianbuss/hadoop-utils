@@ -36,7 +36,7 @@ public class HadoopFile extends Configured implements Tool {
         this.configuration = configuration;
     }
 
-    public void inspect() throws IOException {
+    public String inspect() throws IOException {
         FileSystem fileSystem = FileSystem.get(configuration);
         Path filePath = new Path(file);
         FSDataInputStream is = fileSystem.open(filePath);
@@ -46,12 +46,11 @@ public class HadoopFile extends Configured implements Tool {
             for (Detector detector : REGISTERED_DETECTORS) {
                 if (detector.detect(header, read)) {
                     PathData pd = new PathData(file, configuration);
-                    System.out.println(file + ": " + detector.analyze(pd, ""));
-                    return;
+                    return(file + ": " + detector.analyze(pd, ""));
                 }
             }
 
-            System.out.println(file + ": octet-stream");
+            return (file + ": octet-stream");
         }
         finally {
             is.close();
@@ -61,7 +60,7 @@ public class HadoopFile extends Configured implements Tool {
 
     @Override
     public int run(String[] strings) throws Exception {
-        inspect();
+        System.out.println(inspect());
         return 0;
     }
 

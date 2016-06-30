@@ -25,31 +25,31 @@ public class HadoopFileTest {
     @Test
     public void testParquetFile() throws IOException {
         HadoopFile hadoopFile = new HadoopFile("src/test/resources/testparq.parq", configuration);
-        hadoopFile.inspect();
+        String result = hadoopFile.inspect();
     }
 
     @Test
     public void testAvroFile() throws IOException  {
         HadoopFile hadoopFile = new HadoopFile("src/test/resources/testavro.avro", configuration);
-        hadoopFile.inspect();
+        String result = hadoopFile.inspect();
     }
 
     @Test
     public void testSeqFile() throws IOException {
         HadoopFile hadoopFile = new HadoopFile("src/test/resources/testseq.seq", configuration);
-        hadoopFile.inspect();
+        String result = hadoopFile.inspect();
     }
 
     @Test
     public void testRCFile() throws IOException {
         HadoopFile hadoopFile = new HadoopFile("src/test/resources/testrcfile.rcf", configuration);
-        hadoopFile.inspect();
+        String result = hadoopFile.inspect();
     }
 
     @Test
     public void testORCFile() throws IOException {
         HadoopFile hadoopFile = new HadoopFile("src/test/resources/testorc.orc", configuration);
-        hadoopFile.inspect();
+        String result = hadoopFile.inspect();
     }
 
 }
